@@ -36,18 +36,16 @@ void setup() {
     ledcAttach(motor_N_pins[i], PWM_FREQ, PWM_RESOLUTION);
   }
 
-  ESP_BT.begin("ESP32_LED_Control"); // Имя хоста Bluetooth
+  ESP_BT.begin("ESP32_robot_Control"); // Имя хоста Bluetooth
   Serial.println("Bluetooth Device is Ready to Pair");
 }
 
 /* Двигаем колесо с номером 0-3 */
 void moveWheel(byte wheel_num, bool direction) {
-
   if (wheel_num > 3) {
     Serial.printf("Номер колеса %u за пределами допустимых значений (0 - 3)!\n", wheel_num);
     return;
   }
-  
   if (direction == false) {
     ledcWrite(motor_P_pins[wheel_num], 0);
     ledcWrite(motor_N_pins[wheel_num], speed);
@@ -73,26 +71,63 @@ void move(byte speed, bool direction) {
   
 }
 
+void turnLeft(byte speed) {
+
+  ledcWrite(motor_P_pins[0], 0);
+  ledcWrite(motor_N_pins[0], speed);
+  ledcWrite(motor_P_pins[3], 0);
+  ledcWrite(motor_N_pins[3], speed);
+
+  ledcWrite(motor_P_pins[1], speed);
+  ledcWrite(motor_N_pins[1], 0);
+  ledcWrite(motor_P_pins[2], speed);
+  ledcWrite(motor_N_pins[2], 0);
+}
+
+void turnRight(byte speed) {
+
+  ledcWrite(motor_P_pins[1], 0);
+  ledcWrite(motor_N_pins[1], speed);
+  ledcWrite(motor_P_pins[2], 0);
+  ledcWrite(motor_N_pins[2], speed);
+
+  ledcWrite(motor_P_pins[0], speed);
+  ledcWrite(motor_N_pins[0], 0);
+  ledcWrite(motor_P_pins[3], speed);
+  ledcWrite(motor_N_pins[3], 0);
+}
+
 void loop() {
   if (ESP_BT.available()) // Проверяем, не получили ли мы что-либо по Bluetooth
   {
     incoming = ESP_BT.read(); // Считываем данные
     Serial.print("Received:"); Serial.println(incoming);
-    if (incoming == 70)
-    {
-      move(speed, true);
-      Serial.println("FWD");
+    switch (incoming) {
+      case 70:
+        move(speed, true);
+        Serial.println("FWD");
+        break;
+      case 66:
+        move(speed, false);
+        Serial.println("BWD");
+        break;
+      case 76:
+        turnLeft(speed);
+        Serial.println("LEFT");
+        break;
+      case 82:
+        turnRight(speed);
+        Serial.println("RIGHT");
+        break;
+      case 48:
+        move(0, false);
+        Serial.println("Stop");
+        break;
+      default:
+        Serial.println("Unknown msg!");
+        break;
     }
-    if (incoming == 66)
-    {
-      move(speed, false);
-      Serial.println("BWD");
-    }
-    if (incoming == 48)
-    {
-      move(0, false);
-      Serial.println("LED turned OFF");
-    }
+    
   }
   delay(20);
 
