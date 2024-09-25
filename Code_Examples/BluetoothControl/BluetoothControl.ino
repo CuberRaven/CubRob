@@ -41,16 +41,16 @@ void setup() {
 }
 
 /* Двигаем колесо с номером 0-3 */
-void moveWheel(byte wheel_num, bool direction) {
+void moveWheel(byte wheel_num, byte spd, bool direction) {
   if (wheel_num > 3) {
     Serial.printf("Номер колеса %u за пределами допустимых значений (0 - 3)!\n", wheel_num);
     return;
   }
   if (direction == false) {
     ledcWrite(motor_P_pins[wheel_num], 0);
-    ledcWrite(motor_N_pins[wheel_num], speed);
+    ledcWrite(motor_N_pins[wheel_num], spd);
   } else {
-    ledcWrite(motor_P_pins[wheel_num], speed);
+    ledcWrite(motor_P_pins[wheel_num], spd);
     ledcWrite(motor_N_pins[wheel_num], 0);
   }
 }
@@ -59,13 +59,11 @@ void move(byte speed, bool direction) {
 
   if (direction == false) {
     for (int i = 0; i < ENC_NUM; i++) {
-      ledcWrite(motor_P_pins[i], 0);
-      ledcWrite(motor_N_pins[i], speed);
+      moveWheel(i, speed, false);
     }
   } else {
     for (int i = 0; i < ENC_NUM; i++) {
-      ledcWrite(motor_P_pins[i], speed);
-      ledcWrite(motor_N_pins[i], 0);
+      moveWheel(i, speed, true);
     }
   }
   
@@ -73,28 +71,20 @@ void move(byte speed, bool direction) {
 
 void turnLeft(byte speed) {
 
-  ledcWrite(motor_P_pins[0], 0);
-  ledcWrite(motor_N_pins[0], speed);
-  ledcWrite(motor_P_pins[3], 0);
-  ledcWrite(motor_N_pins[3], speed);
+  moveWheel(0, speed, false);
+  moveWheel(3, speed, false);
 
-  ledcWrite(motor_P_pins[1], speed);
-  ledcWrite(motor_N_pins[1], 0);
-  ledcWrite(motor_P_pins[2], speed);
-  ledcWrite(motor_N_pins[2], 0);
+  moveWheel(1, speed, true);
+  moveWheel(2, speed, true);
 }
 
 void turnRight(byte speed) {
 
-  ledcWrite(motor_P_pins[1], 0);
-  ledcWrite(motor_N_pins[1], speed);
-  ledcWrite(motor_P_pins[2], 0);
-  ledcWrite(motor_N_pins[2], speed);
+  moveWheel(1, speed, false);
+  moveWheel(2, speed, false);
 
-  ledcWrite(motor_P_pins[0], speed);
-  ledcWrite(motor_N_pins[0], 0);
-  ledcWrite(motor_P_pins[3], speed);
-  ledcWrite(motor_N_pins[3], 0);
+  moveWheel(0, speed, true);
+  moveWheel(3, speed, true);
 }
 
 void loop() {

@@ -38,19 +38,19 @@ void setup() {
 /*
  * Функция для движения робота. 
  * speed - скорость (0-255).
- * direction - направление (false - вперед, true - назад).
+ * forward - направление. true - вперед, false - назад
  */
-void move(byte speed, bool direction) {
+void move(byte speed, bool forward) {
 
-  if (direction == false) {
-    for (int i = 0; i < ENC_NUM; i++) {
-      ledcWrite(motor_P_pins[i], 0);
-      ledcWrite(motor_N_pins[i], speed);
-    }
-  } else {
+  if (forward) {
     for (int i = 0; i < ENC_NUM; i++) {
       ledcWrite(motor_P_pins[i], speed);
       ledcWrite(motor_N_pins[i], 0);
+    }
+  } else {
+    for (int i = 0; i < ENC_NUM; i++) {
+      ledcWrite(motor_P_pins[i], 0);
+      ledcWrite(motor_N_pins[i], speed);
     }
   }
   
