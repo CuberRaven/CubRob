@@ -1,15 +1,3 @@
-/*
-  WiFiAccessPoint.ino creates a WiFi access point and provides a web server on it.
-
-  Steps:
-  1. Connect to the access point "yourAp"
-  2. Point your web browser to http://192.168.4.1/H to turn the LED on or http://192.168.4.1/L to turn it off
-     OR
-     Run raw TCP "GET /H" and "GET /L" on PuTTY terminal with 192.168.4.1 as IP address and 80 as port
-
-  Created for arduino-esp32 on 04 July, 2018
-  by Elochukwu Ifediora (fedy0)
-*/
 
 #include <WiFi.h>
 #include <NetworkClient.h>
@@ -72,7 +60,7 @@ void setup() {
 }
 
 void loop() {
-  NetworkClient client = server.accept();  // listen for incoming clients
+  NetworkClient client = server.accept();  
 
   if (client) {                     // Если есть новый клиент
     Serial.println("New Client.");  // сообщим о нем в последовательный порт
@@ -95,7 +83,7 @@ void loop() {
             client.println("Content-type:text/html");
             client.println();
 
-            // Содержимое ответа
+            /* Содержимое ответа. Введя в адресную строку браузера http://192.168.4.1 , мы попадем на веб-страницу, с которой можно управлять роботом */ 
             client.print("<button onclick=\"location.href='http://192.168.4.1/W'\">FORWARD</button><br>");
             client.print("<button onclick=\"location.href='http://192.168.4.1/S'\">BACK</button><br>");
             client.print("<button onclick=\"location.href='http://192.168.4.1/A'\">LEFT</button><br>");

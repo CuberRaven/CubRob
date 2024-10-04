@@ -17,7 +17,7 @@ byte enc_B_pins[ENC_NUM] = {ENC1_B, ENC2_B, ENC3_B, ENC4_B};
 byte motor_P_pins[ENC_NUM] = {M1P, M2P, M3P, M4P};
 byte motor_N_pins[ENC_NUM] = {M1N, M2N, M3N, M4N};
 
-long long int encoderData = 0;
+long long int encoderData[ENC_NUM] = {0};
 
 int speed = 125;
 
@@ -59,11 +59,12 @@ void move(byte speed, bool forward) {
 void loop() {
   /* Заставляем мотор двигаться */
   move(speed,1);
-
+  
   /* Получаем данные с энкодера */
   Serial.printf("Энкодеры: ");
   for (int i = 0; i < ENC_NUM; i++) {
-    Serial.printf("|%lld\t", wheelEncoders[i].getCount());
+    encoderData[i] = wheelEncoders[i].getCount();
+    Serial.printf("|%lld\t", encoderData[i]);
   }
   Serial.println("|");
   delay(100);
