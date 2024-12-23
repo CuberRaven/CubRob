@@ -19,7 +19,7 @@ byte motor_N_pins[ENC_NUM] = {M1N, M2N, M3N, M4N};
 
 long long int encoderData[ENC_NUM] = {0};
 
-int speed = 125;
+int speed = -125;
 
 void setup() {
   Serial.begin(115200);
@@ -40,17 +40,17 @@ void setup() {
  * speed - скорость (0-255).
  * forward - направление. true - вперед, false - назад
  */
-void move(byte speed, bool forward) {
+void move(int speed) {
 
-  if (forward) {
+  if (speed > 0) {
     for (int i = 0; i < ENC_NUM; i++) {
-      ledcWrite(motor_P_pins[i], speed);
-      ledcWrite(motor_N_pins[i], 0);
+      ledcWrite(motor_N_pins[i], speed);
+      ledcWrite(motor_P_pins[i], 0);
     }
   } else {
     for (int i = 0; i < ENC_NUM; i++) {
-      ledcWrite(motor_P_pins[i], 0);
-      ledcWrite(motor_N_pins[i], speed);
+      ledcWrite(motor_N_pins[i], 0);
+      ledcWrite(motor_P_pins[i], -speed);
     }
   }
   
@@ -58,7 +58,7 @@ void move(byte speed, bool forward) {
 
 void loop() {
   /* Заставляем мотор двигаться */
-  move(speed,1);
+  move(speed);
   
   /* Получаем данные с энкодера */
   Serial.printf("Энкодеры: ");

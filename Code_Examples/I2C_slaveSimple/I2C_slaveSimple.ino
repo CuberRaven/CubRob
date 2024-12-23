@@ -15,7 +15,7 @@
 #define SENSOR_ADDR 10
 #define MOTOR_ADDR 11
 
-byte slave_address = MOTOR_ADDR; // Адрес контроллера, его можно изменить на MOTOR_ADDR
+byte slave_address = SENSOR_ADDR; // Адрес контроллера, его можно изменить на MOTOR_ADDR или SENSOR_ADDR
 
 char from_sensor[16] = "Answer from SNR"; // Ответ от Sensor, он отправляется на ведущий контроллер и выводится там
 char from_motor[16] = "Answer from MTR";  // Ответ от Motor, он отправляется на ведущий контроллер и выводится там
